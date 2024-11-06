@@ -10,7 +10,6 @@ import os
 from tqdm import tqdm
 import pickle
 
-
 # Dự đoán xe từ các vùng bounding box trong video
 def detect_car_in_frame(image):
     features, hog_image = hog(image, pixels_per_cell=(16, 16), cells_per_block=(2, 2), visualize=True)
@@ -40,7 +39,6 @@ def correlation_distance(x, y):
     denominator = np.sqrt(np.sum(x_centered ** 2)) * np.sqrt(np.sum(y_centered ** 2))
     
     return 1 - (numerator / (denominator + 1e-10))  # use epsilon avoid 0
-
 
 # Non-Maximum Suppression (NMS) để loại bỏ các bounding box bị overlap
 def non_max_suppression(boxes, scores, threshold=0.5):
@@ -81,77 +79,68 @@ def non_max_suppression(boxes, scores, threshold=0.5):
 
     return keep
 
-
-#load model
-with open('LR.pkl', 'rb') as f:
+# Load model
+with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
-#cc = 3000
-cap = cv2.VideoCapture('pipe1.jpg')
-#output_folder = 'dataset'
 
-boxes = []  # Danh sách các bounding box (x1, y1, x2, y2)
-scores = []  # Danh sách xác suất tương ứng với mỗi bounding box
-########################################################################################################
+# Khởi tạo video
+cap = cv2.VideoCapture('hm4.webp')
+
+#cc = 26000
+output_folder = 'dataset'
+
+# Các kích thước sliding window khác nhau
+window_sizes = [(140, 440), (100, 254), (120, 291)]  # Có thể thay đổi thêm các kích thước khác
+
 while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
         break
 
+    #frame = cv2.resize(frame, (0, 0), fx=0.7, fy=0.7)
 
-    #frame = cv2.resize(frame, (0, 0), fx=1.3, fy=1.3)
-
-    c = 0
     # Chuyển đổi sang ảnh xám
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Áp dụng sliding window
-    for (x, y, window) in sliding_window(gray, step_size=8, window_size=(40, 44)):
-        c += 1
-        #cc +=1
-        #print(c)
-        if window.shape[1] != 40 or window.shape[0] != 44:
-            continue  # Bỏ qua nếu kích thước không khớp với window
+    boxes = []  # Danh sách các bounding box (x1, y1, x2, y2)
+    scores = []  # Danh sách xác suất tương ứng với mỗi bounding box
 
+    # Áp dụng sliding window với nhiều kích thước
+    for window_size in window_sizes:
+        for (x, y, window) in sliding_window(gray, step_size=8, window_size=window_size):
+            #cc +=1
+            if window.shape[1] != window_size[0] or window.shape[0] != window_size[1]:
+                continue  # Bỏ qua nếu kích thước không khớp với window
 
-        window = cv2.resize(window, (80, 36))
-        prediction, probabilities = detect_car_in_frame(window)
+            # Resize cửa sổ để chuẩn hóa kích thước đầu vào
+            window_resized = cv2.resize(window, (88, 254))
+            prediction, probabilities = detect_car_in_frame(window_resized)
 
-        if prediction == 'count' and probabilities[0][0] > 0.9:
-            print(prediction, probabilities)
-            # Thêm bounding box và xác suất vào danh sách
-            temp = frame
-            boxes.append([x, y, x + 40, y + 44])
-
-            # Lưu ảnh phát hiện xe vào thư mục
-            #output_image_path = os.path.join(output_folder, f'{cc}.png')
-            #cv2.imwrite(output_image_path, frame[y:y + 32, x:x + 80])
-
-            scores.append(probabilities[0][0])
+            if prediction == 'human' and probabilities[0][0] > 0.93:
+                print(prediction, probabilities)
+                boxes.append([x, y, x + window_size[0], y + window_size[1]])
+                scores.append(probabilities[0][0])
+                #output_image_path = os.path.join(output_folder, f'{cc}.jpg')
+                #cv2.imwrite(output_image_path, frame[y:y + window_size[1], x:x + window_size[0]])
 
     # Áp dụng non-maximum suppression
     if len(boxes) > 0:
         boxes = np.array(boxes)
         scores = np.array(scores)
-        indices = non_max_suppression(boxes, scores, threshold=0.2)  # Thay đổi threshold nếu cần
+        indices = non_max_suppression(boxes, scores, threshold=0.1)  # Thay đổi threshold nếu cần
 
         # Vẽ các bounding box sau khi áp dụng NMS
         for i in indices:
             (x1, y1, x2, y2) = boxes[i]
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-
-
     # Hiển thị khung hình
     #frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-    cv2.imwrite("check2.png", frame)
+    cv2.imwrite("check.png", frame)
     cv2.imshow('Detected pipe', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):
         break
-
-    # Reset boxes và scores cho khung hình tiếp theo
-    boxes = []
-    scores = []
 
 cap.release()
 cv2.destroyAllWindows()
