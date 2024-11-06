@@ -75,7 +75,7 @@ with tqdm(total=number_of_train_image_count) as pbar:
         image_list = os.listdir(os.path.join(path))
         for image_name in image_list:
             image = read_image(os.path.join(path, image_name))
-            image = cv2.resize(image, (80, 36))
+            image = cv2.resize(image, (88, 254))
             #histogram_features = normalized_color_histogram(image)
             #moment_features = color_moment(image)
             #dcd_features = dominant_color_descriptor(image)
@@ -101,13 +101,13 @@ knn.fit(X_train, y_train)
 
 prediction = knn.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+print(f"Precision: {precision_score(y_test, prediction, labels=['human', 'not_human'], average='macro', zero_division=0)}")
+print(f"Recall: {recall_score(y_test, prediction, labels=['human', 'not_human'], average='micro', zero_division=0)}")
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
-#with open('test.pkl', 'wb') as f:
-#    pickle.dump(knn, f)
+with open('KNN.pkl', 'wb') as f:
+    pickle.dump(knn, f)
 
 #############################################################################################
 # LogisticRegression
@@ -119,8 +119,8 @@ lr.fit(X_train, y_train)
 
 prediction = lr.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+print(f"Precision: {precision_score(y_test, prediction, labels=['human', 'not_human'], average='macro', zero_division=0)}")
+print(f"Recall: {recall_score(y_test, prediction, labels=['human', 'not_human'], average='micro', zero_division=0)}")
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
@@ -136,15 +136,18 @@ from sklearn import svm
 # data since we want to plot the support vectors
 C = 1.0  # SVM regularization parameter
 
-svm = svm.SVC(gamma=0.1, C=10, probability=True)
+svm = svm.SVC(gamma=0.08, C=10, probability=True)
 svm.fit(X_train, y_train)
 
 prediction = svm.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+print(f"Precision: {precision_score(y_test, prediction, labels=['human', 'not_human'], average='macro', zero_division=0)}")
+print(f"Recall: {recall_score(y_test, prediction, labels=['human', 'not_human'], average='micro', zero_division=0)}")
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
+
+with open('SVM.pkl', 'wb') as f:
+    pickle.dump(svm, f)
 
 #############################################################################################
 # naive bayes
@@ -155,13 +158,13 @@ nb = GaussianNB()
 nb.fit(X_train, y_train)
 prediction = nb.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+print(f"Precision: {precision_score(y_test, prediction, labels=['human', 'not_human'], average='macro', zero_division=0)}")
+print(f"Recall: {recall_score(y_test, prediction, labels=['human', 'not_human'], average='micro', zero_division=0)}")
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
 #############################################################################################
-# random forest
+# naive bayes
 print("#####################################\nRandom Forest classifier\n")
 from sklearn.ensemble import RandomForestClassifier
 
@@ -169,7 +172,7 @@ nb = RandomForestClassifier(n_jobs=-1, max_depth=20, max_features=30)
 nb.fit(X_train, y_train)
 prediction = nb.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+print(f"Precision: {precision_score(y_test, prediction, labels=['human', 'not_human'], average='macro', zero_division=0)}")
+print(f"Recall: {recall_score(y_test, prediction, labels=['human', 'not_human'], average='micro', zero_division=0)}")
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))

@@ -54,5 +54,8 @@ while True:
     features, hog_image = hog(image, pixels_per_cell=(16, 16), cells_per_block=(2, 2), visualize=True)
 
     cv2.imshow("Image", hog_image)
+
+    #cv2.imshow("Processed Image", imgPre)
+
     # cv2.imshow("imgColor", imgColor)
     cv2.waitKey(1)
