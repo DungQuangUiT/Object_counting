@@ -84,20 +84,20 @@ with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 
 # Khởi tạo video
-cap = cv2.VideoCapture('hm4.webp')
+cap = cv2.VideoCapture('hm9.jpg')
 
 #cc = 26000
 output_folder = 'dataset'
 
 # Các kích thước sliding window khác nhau
-window_sizes = [(140, 440), (100, 254), (120, 291)]  # Có thể thay đổi thêm các kích thước khác
+window_sizes = [(160, 440), (160, 400), (230, 550)]  # Có thể thay đổi thêm các kích thước khác
 
 while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
         break
 
-    #frame = cv2.resize(frame, (0, 0), fx=0.7, fy=0.7)
+    frame = cv2.resize(frame, (0, 0), fx=0.9, fy=0.9)
 
     # Chuyển đổi sang ảnh xám
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -116,7 +116,7 @@ while(cap.isOpened()):
             window_resized = cv2.resize(window, (88, 254))
             prediction, probabilities = detect_car_in_frame(window_resized)
 
-            if prediction == 'human' and probabilities[0][0] > 0.93:
+            if prediction == 'human' and probabilities[0][0] > 0.95:
                 print(prediction, probabilities)
                 boxes.append([x, y, x + window_size[0], y + window_size[1]])
                 scores.append(probabilities[0][0])
@@ -127,7 +127,7 @@ while(cap.isOpened()):
     if len(boxes) > 0:
         boxes = np.array(boxes)
         scores = np.array(scores)
-        indices = non_max_suppression(boxes, scores, threshold=0.1)  # Thay đổi threshold nếu cần
+        indices = non_max_suppression(boxes, scores, threshold=0.3)  # Thay đổi threshold nếu cần
 
         # Vẽ các bounding box sau khi áp dụng NMS
         for i in indices:
