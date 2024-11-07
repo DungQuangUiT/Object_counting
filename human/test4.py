@@ -5,7 +5,6 @@ from skimage.feature import hog
 import xml.etree.ElementTree as ET
 from tqdm import tqdm
 
-# Đọc ground truth từ file XML
 def read_xml_annotations(xml_path):
     tree = ET.parse(xml_path)
     root = tree.getroot()
@@ -22,11 +21,9 @@ def read_xml_annotations(xml_path):
     
     return np.array(boxes)
 
-# Hàm để điều chỉnh ground truth box dựa trên mức độ scale
 def scale_boxes(boxes, scale_factor):
     return (boxes * scale_factor).astype(int)
 
-# Tính toán IoU
 def calculate_iou(box1, box2):
     x1 = max(box1[0], box2[0])
     y1 = max(box1[1], box2[1])
@@ -44,20 +41,17 @@ def calculate_iou(box1, box2):
     iou = intersection_area / union_area
     return iou
 
-# Hàm phát hiện xe trong ảnh
 def detect_car_in_frame(image):
     features, hog_image = hog(image, pixels_per_cell=(16, 16), cells_per_block=(2, 2), visualize=True)
     prediction = knn.predict([features])
     probabilities = knn.predict_proba([features])
     return prediction, probabilities
 
-# Hàm sliding window
 def sliding_window(image, step_size, window_size):
     for y in range(0, image.shape[0] - window_size[1], step_size):
         for x in range(0, image.shape[1] - window_size[0], step_size):
             yield (x, y, image[y:y + window_size[1], x:x + window_size[0]])
 
-# Hàm Non-Maximum Suppression
 def non_max_suppression(boxes, scores, threshold=0.5):
     if len(boxes) == 0:
         return []
@@ -124,7 +118,7 @@ while(cap.isOpened()):
             if window.shape[1] != window_size[0] or window.shape[0] != window_size[1]:
                 continue
 
-            window_resized = cv2.resize(window, (88, 254))  # Resize để phù hợp với mô hình đã huấn luyện
+            window_resized = cv2.resize(window, (88, 254))
             prediction, probabilities = detect_car_in_frame(window_resized)
 
             if prediction == 'human' and probabilities[0][0] > 0.95:
@@ -147,25 +141,29 @@ while(cap.isOpened()):
                         (int(pred_box[2]), int(pred_box[3])), 
                         (0, 255, 0), 2)
             
-            # Vẽ ground truth boxes và tính IoU
+            # Tìm IoU cao nhất với ground truth boxes
+            max_iou = 0
             for gt_box in scaled_ground_truth_boxes:
                 # Vẽ ground truth box màu đỏ
                 cv2.rectangle(result_image, 
                             (int(gt_box[0]), int(gt_box[1])), 
                             (int(gt_box[2]), int(gt_box[3])), 
                             (0, 0, 255), 2)
-                
-                # Tính và hiển thị IoU
                 iou = calculate_iou(pred_box, gt_box)
-                text_pos = (int((pred_box[0] + gt_box[0])/2), int((pred_box[1] + gt_box[1])/2) - 10)
-                cv2.putText(result_image, 
-                          f'IoU: {iou:.2f}', 
-                          text_pos,
-                          cv2.FONT_HERSHEY_SIMPLEX, 
-                          0.7, (255, 255, 255), 2)
+                if iou > max_iou:
+                    max_iou = iou
+
+            
+            # Vẽ ground truth boxes và hiển thị IoU cao nhất
+            text_pos = (int(pred_box[0]), int(pred_box[1]) - 10)
+            cv2.putText(result_image, 
+                      f'IoU: {max_iou:.2f}', 
+                      text_pos,
+                      cv2.FONT_HERSHEY_SIMPLEX, 
+                      0.7, (255, 255, 255), 2)
 
     # Lưu kết quả
-    cv2.imwrite("result_with_iou_scaled.png", result_image)
+    cv2.imwrite("result_with_iou_scaled_2.png", result_image)
     cv2.imshow('Detection Results with IoU', result_image)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):

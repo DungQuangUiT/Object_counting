@@ -106,8 +106,8 @@ print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], a
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
-#with open('test.pkl', 'wb') as f:
-#    pickle.dump(knn, f)
+with open('test.pkl', 'wb') as f:
+    pickle.dump(knn, f)
 
 #############################################################################################
 # LogisticRegression
@@ -124,8 +124,8 @@ print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], a
 print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
-with open('LR.pkl', 'wb') as f:
-    pickle.dump(lr, f)
+#with open('LR.pkl', 'wb') as f:
+   # pickle.dump(lr, f)
 
 #############################################################################################
 # SVM

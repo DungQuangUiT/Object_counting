@@ -164,7 +164,7 @@ print("Confusion matrix:")
 print(confusion_matrix(y_test, prediction))
 
 #############################################################################################
-# naive bayes
+# random forest
 print("###########################\nRandom Forest classifier\n")
 from sklearn.ensemble import RandomForestClassifier
 
