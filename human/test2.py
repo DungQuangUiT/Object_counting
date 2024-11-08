@@ -84,7 +84,7 @@ with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 
 # Khởi tạo video
-cap = cv2.VideoCapture('hm9.jpg')
+cap = cv2.VideoCapture('hm11.jpg')
 
 #cc = 26000
 output_folder = 'dataset'
@@ -97,7 +97,7 @@ while(cap.isOpened()):
     if not ret:
         break
 
-    frame = cv2.resize(frame, (0, 0), fx=0.9, fy=0.9)
+    frame = cv2.resize(frame, (0, 0), fx=1.0, fy=1.0)
 
     # Chuyển đổi sang ảnh xám
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -136,7 +136,7 @@ while(cap.isOpened()):
 
     # Hiển thị khung hình
     #frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-    cv2.imwrite("check.png", frame)
+    cv2.imwrite("checkhm11.png", frame)
     cv2.imshow('Detected pipe', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):

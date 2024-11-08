@@ -90,7 +90,7 @@ with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 
 # Đọc ground truth từ file XML
-xml_path = 'test123.xml'  # Thay đổi đường dẫn tới file XML của bạn
+xml_path = 'hm3.xml'  # Thay đổi đường dẫn tới file XML của bạn
 ground_truth_boxes = read_xml_annotations(xml_path)
 
 # Điều chỉnh ground truth boxes theo scale factor
@@ -98,7 +98,7 @@ scale_factor = 0.9
 scaled_ground_truth_boxes = scale_boxes(ground_truth_boxes, scale_factor)
 
 # Khởi tạo video
-cap = cv2.VideoCapture('hm9.jpg')
+cap = cv2.VideoCapture('hm3.jpg')
 window_sizes = [(160, 440), (160, 400), (230, 550)]
 
 while(cap.isOpened()):
@@ -163,7 +163,7 @@ while(cap.isOpened()):
                       0.7, (255, 255, 255), 2)
 
     # Lưu kết quả
-    cv2.imwrite("result_with_iou_scaled_2.png", result_image)
+    cv2.imwrite("result_with_iou_scaled_3.png", result_image)
     cv2.imshow('Detection Results with IoU', result_image)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):
