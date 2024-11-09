@@ -90,14 +90,23 @@ cap = cv2.VideoCapture('hm11.jpg')
 output_folder = 'dataset'
 
 # Các kích thước sliding window khác nhau
-window_sizes = [(160, 440), (160, 400), (230, 550)]  # Có thể thay đổi thêm các kích thước khác
+#hm3 = [(180, 450), (160, 400), (230, 650)]     # scale = 1
+#hm4 = [(170, 450), (110, 400), (230, 650)]     # scale = 1
+#hm5 = [(170, 450), (150, 340), (230, 650)]     # scale = 1.8
+#hm6 = [(200, 470), (270, 500), (240, 560)]    # scale = 1
+#hm7 = [(150, 380), (170, 450), (140, 410)]    # scale = 1
+#hm8 = [(240, 500), (180, 460), (220, 370)]    # scale = 1
+#hm9 = [(190, 530), (150, 480), (340, 730)]    # scale = 1
+#hm10 = [(55, 150), (60, 210), (110, 230)]    # scale = 1
+#hm11 = [(130, 320), (150, 320), (200, 370)]    # scale = 1
+window_sizes = [(130, 320), (150, 320), (200, 370)]  # Có thể thay đổi thêm các kích thước khác
 
 while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
         break
 
-    frame = cv2.resize(frame, (0, 0), fx=1.0, fy=1.0)
+    frame = cv2.resize(frame, (0, 0), fx=1, fy=1)
 
     # Chuyển đổi sang ảnh xám
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -116,7 +125,7 @@ while(cap.isOpened()):
             window_resized = cv2.resize(window, (88, 254))
             prediction, probabilities = detect_car_in_frame(window_resized)
 
-            if prediction == 'human' and probabilities[0][0] > 0.95:
+            if prediction == 'human' and probabilities[0][0] > 0.96:
                 print(prediction, probabilities)
                 boxes.append([x, y, x + window_size[0], y + window_size[1]])
                 scores.append(probabilities[0][0])
@@ -136,7 +145,7 @@ while(cap.isOpened()):
 
     # Hiển thị khung hình
     #frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-    cv2.imwrite("checkhm11.png", frame)
+    cv2.imwrite("hm11_detect.jpg", frame)
     cv2.imshow('Detected pipe', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):

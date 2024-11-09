@@ -90,16 +90,16 @@ with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 
 # Đọc ground truth từ file XML
-xml_path = 'hm3.xml'  # Thay đổi đường dẫn tới file XML của bạn
+xml_path = 'hm11.xml'  # Thay đổi đường dẫn tới file XML của bạn
 ground_truth_boxes = read_xml_annotations(xml_path)
 
 # Điều chỉnh ground truth boxes theo scale factor
-scale_factor = 0.9
+scale_factor = 1
 scaled_ground_truth_boxes = scale_boxes(ground_truth_boxes, scale_factor)
 
 # Khởi tạo video
-cap = cv2.VideoCapture('hm3.jpg')
-window_sizes = [(160, 440), (160, 400), (230, 550)]
+cap = cv2.VideoCapture('hm11.jpg')
+window_sizes = [(130, 320), (150, 320), (200, 370)]
 
 while(cap.isOpened()):
     ret, frame = cap.read()
@@ -110,6 +110,7 @@ while(cap.isOpened()):
     result_image = frame.copy()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+    max_ious = []  # Initialize list to store highest IoUs for each predicted box
     boxes = []
     scores = []
 
@@ -121,7 +122,7 @@ while(cap.isOpened()):
             window_resized = cv2.resize(window, (88, 254))
             prediction, probabilities = detect_car_in_frame(window_resized)
 
-            if prediction == 'human' and probabilities[0][0] > 0.95:
+            if prediction == 'human' and probabilities[0][0] > 0.96:
                 print(prediction, probabilities)
                 boxes.append([x, y, x + window_size[0], y + window_size[1]])
                 scores.append(probabilities[0][0])
@@ -152,7 +153,7 @@ while(cap.isOpened()):
                 iou = calculate_iou(pred_box, gt_box)
                 if iou > max_iou:
                     max_iou = iou
-
+            max_ious.append(max_iou)  # Store the max IoU for this predicted box        
             
             # Vẽ ground truth boxes và hiển thị IoU cao nhất
             text_pos = (int(pred_box[0]), int(pred_box[1]) - 10)
@@ -161,9 +162,17 @@ while(cap.isOpened()):
                       text_pos,
                       cv2.FONT_HERSHEY_SIMPLEX, 
                       0.7, (255, 255, 255), 2)
+    # Calculate and display the average IoU
+    if max_ious:
+        avg_iou = sum(max_ious) / len(max_ious)
+        cv2.putText(result_image, 
+                    f'Average IoU: {avg_iou:.2f}', 
+                    (10, 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 
+                    0.5, (255, 255, 0), 2)
 
     # Lưu kết quả
-    cv2.imwrite("result_with_iou_scaled_3.png", result_image)
+    cv2.imwrite("hm11_IoU.jpg", result_image)
     cv2.imshow('Detection Results with IoU', result_image)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):

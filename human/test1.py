@@ -96,7 +96,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 # TRAIN #################################################################################################
 #KNN
 print("#####################################\nKNN classifier\n")
-knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=7, weights='distance', n_jobs=-1, metric=correlation_distance))
+knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=8, weights='distance', n_jobs=-1, metric=correlation_distance))
 knn.fit(X_train, y_train)
 
 prediction = knn.predict(X_test)
@@ -114,7 +114,7 @@ with open('KNN.pkl', 'wb') as f:
 print("#####################################\nLogistic Regression classifier\n")
 from sklearn.linear_model import LogisticRegression
 
-lr = LogisticRegression(n_jobs=-1, max_iter = 10000)
+lr = LogisticRegression(n_jobs=-1, solver='sag', C=0.1, max_iter = 10000)
 lr.fit(X_train, y_train)
 
 prediction = lr.predict(X_test)
@@ -136,7 +136,7 @@ from sklearn import svm
 # data since we want to plot the support vectors
 C = 1.0  # SVM regularization parameter
 
-svm = svm.SVC(gamma=0.08, C=10, probability=True)
+svm = svm.SVC(gamma=0.084, C=10, probability=True)
 svm.fit(X_train, y_train)
 
 prediction = svm.predict(X_test)
