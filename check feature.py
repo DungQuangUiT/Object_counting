@@ -3,6 +3,8 @@ import cvzone
 import numpy as np
 from cvzone.ColorModule import ColorFinder
 from skimage.feature import hog
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 
 
 totalMoney = 0
@@ -19,7 +21,7 @@ def empty(a):
 
 cv2.namedWindow("Settings")
 cv2.resizeWindow("Settings", 640, 240)
-cv2.createTrackbar("Threshold1", "Settings", 162, 255, empty)
+cv2.createTrackbar("Threshold1", "Settings", 150, 255, empty)
 cv2.createTrackbar("Threshold2", "Settings", 55, 255, empty)
 
 
@@ -40,22 +42,27 @@ def read_image(image_path):
     #image = cv2.cvtColor(image, cv2.COLOR_BGR2LUV)
     return image
 
-img = cv2.imread("pipe1.jpg")
+img = cv2.imread("a.jpg")
 
 
-image = read_image("pipe1.jpg")
+image = read_image("a.jpg")
 
-while True:
-    imgPre = preProcessing(image)
-    #imgContours, conFound = cvzone.findContours(imgPre, imgPre, minArea=20)
+#while True:
+imgPre = preProcessing(image)
+#imgContours, conFound = cvzone.findContours(imgPre, imgPre, minArea=20)
 
 
-    #image = cv2.resize(img, (80, 36))
-    features, hog_image = hog(image, pixels_per_cell=(16, 16), cells_per_block=(2, 2), visualize=True)
+#image = cv2.resize(img, (80, 36))
+#features, hog_image = hog(image, pixels_per_cell=(13, 13), cells_per_block=(2, 2), visualize=True)
+# Randomly sample 500 features from the original array
+# Remove NaNs or infinities by replacing them with zero or the mean
+# Stack the feature vector with itself or a similar vector for PCA
 
-    cv2.imshow("Image", hog_image)
 
-    #cv2.imshow("Processed Image", imgPre)
+imgPre = cv2.resize(imgPre, (0, 0), fx=2, fy=2)
+cv2.imshow("Image", imgPre)
+cv2.imwrite("hog8x8.jpg", imgPre)
+#cv2.imshow("Processed Image", imgPre)
 
-    # cv2.imshow("imgColor", imgColor)
-    cv2.waitKey(1)
+# cv2.imshow("imgColor", imgColor)
+cv2.waitKey(0)

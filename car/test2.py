@@ -69,10 +69,10 @@ def non_max_suppression(boxes, scores, threshold=0.5):
     return keep
 
 # Tải model
-with open('LR.pkl', 'rb') as f:
+with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 
-cap = cv2.VideoCapture('video.mp4')
+cap = cv2.VideoCapture('vid3.mp4')
 
 # Khởi tạo biến
 first_frame_saved = False
@@ -89,7 +89,7 @@ while(cap.isOpened()):
         cv2.imwrite("first_frame.png", frame)
         first_frame_saved = True
         #break 
-    frame = cv2.resize(frame, (0, 0), fx=1.3, fy=1.3)
+    frame = cv2.resize(frame, (0, 0), fx=1.4, fy=1.4)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Áp dụng sliding window
@@ -97,7 +97,7 @@ while(cap.isOpened()):
         if window.shape[1] != 80 or window.shape[0] != 36:
             continue
         prediction, probabilities = detect_car_in_frame(window)
-        if prediction == 'car' and probabilities[0][0] > 0.9:
+        if prediction == 'car' and probabilities[0][0] > 0.75:
             print(prediction, probabilities)
             boxes.append([x, y, x + 80, y + 36])
             scores.append(probabilities[0][0])
@@ -111,7 +111,7 @@ while(cap.isOpened()):
             (x1, y1, x2, y2) = boxes[i]
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    cv2.imwrite("LR_0.9.png", frame)
+    cv2.imwrite("SVM_0.9_2.png", frame)
     cv2.imshow('Detected Cars', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):

@@ -83,7 +83,7 @@ def non_max_suppression(boxes, scores, threshold=0.5):
 
 
 #load model
-with open('LR.pkl', 'rb') as f:
+with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 #cc = 3000
 cap = cv2.VideoCapture('pipe1.jpg')
@@ -116,7 +116,7 @@ while(cap.isOpened()):
         window = cv2.resize(window, (80, 36))
         prediction, probabilities = detect_car_in_frame(window)
 
-        if prediction == 'count' and probabilities[0][0] > 0.9:
+        if prediction == 'count' and probabilities[0][0] > 0.93:
             print(prediction, probabilities)
             # Thêm bounding box và xác suất vào danh sách
             temp = frame
@@ -143,7 +143,7 @@ while(cap.isOpened()):
 
     # Hiển thị khung hình
     #frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-    cv2.imwrite("check2.png", frame)
+    cv2.imwrite("SVM.png", frame)
     cv2.imshow('Detected pipe', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):
