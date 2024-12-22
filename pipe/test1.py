@@ -90,17 +90,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 
 # TRAIN #################################################################################################
 #KNN
-print("#####################################\nKNN classifier\n")
-knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=4, weights='distance', n_jobs=-1, metric=correlation_distance))
-knn.fit(X_train, y_train)
+# print("#####################################\nKNN classifier\n")
+# knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=4, weights='distance', n_jobs=-1, metric=correlation_distance))
+# knn.fit(X_train, y_train)
 
-prediction = knn.predict(X_test)
-# print(f"Accuracy: {accuracy_score(y_test, prediction)}")
-# print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
-# print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
-# print("Confusion matrix:")
-# print(confusion_matrix(y_test, prediction))
-print(classification_report(y_test, prediction, labels=['count', 'uncount']))
+# prediction = knn.predict(X_test)
+# # print(f"Accuracy: {accuracy_score(y_test, prediction)}")
+# # print(f"Precision: {precision_score(y_test, prediction, labels=['count', 'uncount'], average='macro', zero_division=0)}")
+# # print(f"Recall: {recall_score(y_test, prediction, labels=['count', 'uncount'], average='micro', zero_division=0)}")
+# # print("Confusion matrix:")
+# # print(confusion_matrix(y_test, prediction))
+# print(classification_report(y_test, prediction, labels=['count', 'uncount']))
 
 #with open('KNN.pkl', 'wb') as f:
 #    pickle.dump(knn, f)
@@ -183,7 +183,7 @@ print(classification_report(y_test, prediction, labels=['count', 'uncount']))
 #with open('SVM.pkl', 'wb') as f:
 #    pickle.dump(svm, f)
 
-if False:
+if True:
     from sklearn import svm
     # EVALUATION #################################################################################################
 
@@ -217,7 +217,7 @@ if False:
     accuracy_C = []
 
     for C in C_values:
-        svm_model = svm.SVC(gamma=0.01, C=C, probability=True)
+        svm_model = svm.SVC(gamma=0.1, C=C, probability=True)
         svm_model.fit(X_train, y_train)
         prediction = svm_model.predict(X_test)
         acc = accuracy_score(y_test, prediction)
@@ -233,8 +233,8 @@ if False:
     plt.ylabel('Accuracy')
     plt.grid(True)
     plt.legend()
-    plt.scatter(10, accuracy_C[C_values.index(10)], color='red', label=f'C=10, Acc={accuracy_C[C_values.index(10)]:.4f}')
-    plt.text(10, accuracy_C[C_values.index(10)], f'{accuracy_C[C_values.index(10)]:.4f}', fontsize=10, color='red', ha='center', va='bottom')
+    plt.scatter(100, accuracy_C[C_values.index(100)], color='red', label=f'C=100, Acc={accuracy_C[C_values.index(100)]:.4f}')
+    plt.text(100, accuracy_C[C_values.index(100)], f'{accuracy_C[C_values.index(100)]:.4f}', fontsize=10, color='red', ha='center', va='bottom')
     plt.show()
 
 # #############################################################################################

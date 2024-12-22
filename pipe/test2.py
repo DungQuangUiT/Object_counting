@@ -86,7 +86,7 @@ def non_max_suppression(boxes, scores, threshold=0.5):
 with open('SVM.pkl', 'rb') as f:
     knn = pickle.load(f)
 #cc = 3000
-cap = cv2.VideoCapture('pipe1.jpg')
+cap = cv2.VideoCapture('pipe2.jpg')
 #output_folder = 'dataset'
 
 boxes = []  # Danh sách các bounding box (x1, y1, x2, y2)
@@ -98,7 +98,7 @@ while(cap.isOpened()):
         break
 
 
-    #frame = cv2.resize(frame, (0, 0), fx=1.3, fy=1.3)
+    frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
     c = 0
     # Chuyển đổi sang ảnh xám
@@ -116,7 +116,7 @@ while(cap.isOpened()):
         window = cv2.resize(window, (80, 36))
         prediction, probabilities = detect_car_in_frame(window)
 
-        if prediction == 'count' and probabilities[0][0] > 0.93:
+        if prediction == 'count' and probabilities[0][0] > 0.9:
             print(prediction, probabilities)
             # Thêm bounding box và xác suất vào danh sách
             temp = frame
@@ -132,7 +132,7 @@ while(cap.isOpened()):
     if len(boxes) > 0:
         boxes = np.array(boxes)
         scores = np.array(scores)
-        indices = non_max_suppression(boxes, scores, threshold=0.2)  # Thay đổi threshold nếu cần
+        indices = non_max_suppression(boxes, scores, threshold=0.3)  # Thay đổi threshold nếu cần
 
         # Vẽ các bounding box sau khi áp dụng NMS
         for i in indices:

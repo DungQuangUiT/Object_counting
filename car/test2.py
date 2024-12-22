@@ -111,7 +111,7 @@ while(cap.isOpened()):
             (x1, y1, x2, y2) = boxes[i]
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    cv2.imwrite("SVM_0.9_2.png", frame)
+    cv2.imwrite("SVM_2.png", frame)
     cv2.imshow('Detected Cars', frame)
     break
     if cv2.waitKey(30) & 0xFF == ord('q'):
