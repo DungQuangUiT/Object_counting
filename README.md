@@ -82,13 +82,13 @@ Non-Maximum Suppression eliminates redundant and overlapping bounding boxes, kee
 
 | Object Type | Feature | Algorithm | Accuracy | Precision | Recall | IoU |
 |------------|---------|-----------|----------|-----------|--------|-----|
-| Car | HOG 8x8 | KNN | 0.95 | 0.94 | 0.95 | 0.75 |
+| Car | HOG 8x8 | KNN | 0.95 | 0.94 | 0.95 | - |
 | Car | HOG 8x8 | Logistic Regression | 0.95 | 0.94 | 0.95 | - |
 | Car | HOG 8x8 | SVM | 0.97 | 0.97 | 0.97 | 0.75 |
-| Pipe | HOG 16x16 | KNN | 0.94 | 0.94 | 0.94 | 0.63 |
+| Pipe | HOG 16x16 | KNN | 0.94 | 0.94 | 0.94 | - |
 | Pipe | HOG 16x16 | Logistic Regression | 0.96 | 0.96 | 0.96 | - |
 | Pipe | HOG 16x16 | SVM | 0.97 | 0.97 | 0.97 | 0.63 |
-| Human | HOG 16x16 | KNN | 0.89 | 0.90 | 0.89 | 0.75 |
+| Human | HOG 16x16 | KNN | 0.89 | 0.90 | 0.89 | - |
 | Human | HOG 16x16 | Logistic Regression | 0.85 | 0.85 | 0.85 | - |
 | Human | HOG 16x16 | SVM | 0.90 | 0.90 | 0.90 | 0.75 |
 
